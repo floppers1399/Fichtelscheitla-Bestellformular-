@@ -1,0 +1,146 @@
+
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Brennholzverwaltung</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 1000px;
+      margin: 30px auto;
+      padding: 16px;
+      background: #f5f3ee;
+      color: #29251f;
+    }
+    h1 { color: #704323; }
+    section {
+      background: white;
+      padding: 20px;
+      margin: 18px 0;
+      border-radius: 12px;
+    }
+    input, select, button {
+      box-sizing: border-box;
+      width: 100%;
+      padding: 12px;
+      margin: 6px 0 12px;
+      font-size: 16px;
+    }
+    button {
+      background: #704323;
+      color: white;
+      border: 0;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      text-align: left;
+      padding: 9px;
+      border-bottom: 1px solid #ddd;
+    }
+    .table-wrap { overflow-x: auto; }
+  </style>
+</head>
+<body>
+  <h1>🔥 Brennholzverwaltung</h1>
+  <p>Deine zentrale Übersicht für Kundenaufträge.</p>
+
+  <section>
+    <h2>Neue Bestellung</h2>
+    <form id="orderForm">
+      <label>Kundenname</label>
+      <input id="customer" required placeholder="Max Mustermann">
+
+      <label>Telefonnummer</label>
+      <input id="phone" type="tel" placeholder="Telefonnummer">
+
+      <label>Holzsorte</label>
+      <select id="wood">
+        <option>Buche</option>
+        <option>Eiche</option>
+        <option>Birke</option>
+        <option>Fichte</option>
+        <option>Andere</option>
+      </select>
+
+      <label>Menge in Raummetern (RM)</label>
+      <input id="quantity" type="number" min="0.1"
+        step="0.1" required placeholder="z. B. 3">
+
+      <label>Liefertermin</label>
+      <input id="delivery" type="date">
+
+      <label>Lieferadresse</label>
+      <input id="address" placeholder="Straße, Ort">
+
+      <button type="submit">Bestellung speichern</button>
+    </form>
+  </section>
+
+  <section>
+    <h2>Bestellungen</h2>
+    <p id="count">Noch keine Bestellungen</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Kunde</th>
+            <th>Holz</th>
+            <th>Menge</th>
+            <th>Liefertermin</th>
+          </tr>
+        </thead>
+        <tbody id="orders"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <script>
+    const form = document.getElementById("orderForm");
+    const list = document.getElementById("orders");
+    let orders = [];
+
+    function showOrders() {
+      list.replaceChildren();
+
+      orders.forEach(order => {
+        const row = document.createElement("tr");
+        [
+          order.customer,
+          order.wood,
+          order.quantity + " RM",
+          order.delivery || "Noch offen"
+        ].forEach(value => {
+          const cell = document.createElement("td");
+          cell.textContent = value;
+          row.appendChild(cell);
+        });
+        list.appendChild(row);
+      });
+
+      document.getElementById("count").textContent =
+        orders.length + (orders.length === 1
+          ? " Bestellung" : " Bestellungen");
+    }
+
+    form.addEventListener("submit", event => {
+      event.preventDefault();
+
+      orders.push({
+        customer: document.getElementById("customer").value,
+        phone: document.getElementById("phone").value,
+        wood: document.getElementById("wood").value,
+        quantity: document.getElementById("quantity").value,
+        delivery: document.getElementById("delivery").value,
+        address: document.getElementById("address").value
+      });
+
+      showOrders();
+      form.reset();
+    });
+  </script>
+</body>
+</html>
